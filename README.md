@@ -1,59 +1,52 @@
-# OBS Plugin Template
+# OBS Dock Hotkeys
 
-## Introduction
+An OBS Studio plugin that lets you assign keyboard shortcuts to any dock panel, so you can instantly focus them without touching the mouse.
 
-The plugin template is meant to be used as a starting point for OBS Studio plugin development. It includes:
+## What it does
 
-* Boilerplate plugin source code
-* A CMake project file
-* GitHub Actions workflows and repository actions
+OBS has many dock panels (Scene List, Sources, Audio Mixer, etc.) but there is no built-in way to focus them with a hotkey. This plugin automatically discovers all docks available in your OBS window — including docks added by other plugins — and registers a hotkey entry for each one under **Settings → Hotkeys**.
 
-## Supported Build Environments
+## Features
 
-| Platform  | Tool   |
-|-----------|--------|
-| Windows   | Visual Studio 17 2022 |
-| macOS     | XCode 16.0 |
-| Windows, macOS  | CMake 3.30.5 |
-| Ubuntu 24.04 | CMake 3.28.3 |
-| Ubuntu 24.04 | `ninja-build` |
-| Ubuntu 24.04 | `pkg-config`
-| Ubuntu 24.04 | `build-essential` |
+- Automatically detects all dock panels, including those added by third-party plugins
+- Registers a **"Focus Dock: ..."** hotkey for each panel found
+- Hotkey bindings are saved per profile and restored on startup
+- Rescans for new docks every few seconds, so late-loading plugin docks are picked up automatically
+- If a dock is hidden, the hotkey will make it visible and bring it to focus
 
-## Quick Start
+## Installation
 
-An absolute bare-bones [Quick Start Guide](https://github.com/obsproject/obs-plugintemplate/wiki/Quick-Start-Guide) is available in the wiki.
+1. Download the latest release for your platform from the [Releases](../../releases) page
+2. Extract and copy the files to your OBS plugins folder:
+   - **Windows**: `C:\Program Files\obs-studio\obs-plugins\64bit\`
+   - **macOS**: `~/Library/Application Support/obs-studio/plugins/`
+3. Restart OBS Studio
 
-## Documentation
+## Usage
 
-All documentation can be found in the [Plugin Template Wiki](https://github.com/obsproject/obs-plugintemplate/wiki).
+1. Open OBS and go to **Tools → Settings → Hotkeys**
+2. Scroll down and look for entries labeled **"Focus Dock: Scene List"**, **"Focus Dock: Sources"**, etc.
+3. Assign a key combination to the docks you want
+4. Press the hotkey at any time to instantly focus that dock
 
-Suggested reading to get up and running:
+## Building from source
 
-* [Getting started](https://github.com/obsproject/obs-plugintemplate/wiki/Getting-Started)
-* [Build system requirements](https://github.com/obsproject/obs-plugintemplate/wiki/Build-System-Requirements)
-* [Build system options](https://github.com/obsproject/obs-plugintemplate/wiki/CMake-Build-System-Options)
+Requirements:
+- CMake 3.28 or higher
+- Qt6
+- OBS Studio source or pre-built dependencies
 
-## GitHub Actions & CI
+```bash
+cmake -S . -B build
+cmake --build build
+```
 
-Default GitHub Actions workflows are available for the following repository actions:
+The plugin name, version and author info are configured in `buildspec.json` at the root of the project.
 
-* `push`: Run for commits or tags pushed to `master` or `main` branches.
-* `pr-pull`: Run when a Pull Request has been pushed or synchronized.
-* `dispatch`: Run when triggered by the workflow dispatch in GitHub's user interface.
-* `build-project`: Builds the actual project and is triggered by other workflows.
-* `check-format`: Checks CMake and plugin source code formatting and is triggered by other workflows.
+## Contributing
 
-The workflows make use of GitHub repository actions (contained in `.github/actions`) and build scripts (contained in `.github/scripts`) which are not needed for local development, but might need to be adjusted if additional/different steps are required to build the plugin.
+Issues and pull requests are welcome. Please open an issue first if you plan a larger change.
 
-### Retrieving build artifacts
+## License
 
-Successful builds on GitHub Actions will produce build artifacts that can be downloaded for testing. These artifacts are commonly simple archives and will not contain package installers or installation programs.
-
-### Building a Release
-
-To create a release, an appropriately named tag needs to be pushed to the `main`/`master` branch using semantic versioning (e.g., `12.3.4`, `23.4.5-beta2`). A draft release will be created on the associated repository with generated installer packages or installation programs attached as release artifacts.
-
-## Signing and Notarizing on macOS
-
-Basic concepts of codesigning and notarization on macOS are explained in the correspodning [Wiki article](https://github.com/obsproject/obs-plugintemplate/wiki/Codesigning-On-macOS) which has a specific section for the [GitHub Actions setup](https://github.com/obsproject/obs-plugintemplate/wiki/Codesigning-On-macOS#setting-up-code-signing-for-github-actions).
+This project follows the same license as the OBS Plugin Template it is based on. See [LICENSE](LICENSE) for details.
