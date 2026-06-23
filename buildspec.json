@@ -36,7 +36,7 @@
             "bundleId": "com.example.plugintemplate-for-obs"
         }
     },
-    "name": "obs-quick-docks",
+    "name": "quick-docks",
     "displayName": "Hotkeys for OBS Docks",
     "version": "1.0.0",
     "author": "ChemitaDev",
