@@ -1,6 +1,6 @@
 # Bind Hotkeys to OBS Docks
 
-An third party plugin that lets you assign keyboard shortcuts to any dock panel, so you can instantly focus them without touching the mouse.
+A third party plugin that lets you assign keyboard shortcuts to any dock panel, so you can instantly focus them without touching the mouse.
 
 ## What it does
 
