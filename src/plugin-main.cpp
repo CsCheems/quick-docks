@@ -25,11 +25,28 @@ struct DockHotkey {
 	QPointer<QDockWidget> dock;
 };
 
+void test_obs_finish_loading(enum obs_frontend_event event, void *){
+	if(event != OBS_FRONTEND_EVENT_FINISHED_LOADING)
+	{
+		obs_log(LOG_INFO, "OBS has not done loading");
+		return;
+	}
+
+	obs_log(LOG_INFO, "OBS Done Loading");
+	return;	
+}
+
 bool obs_module_load(void)
 {
+	obs_frontend_add_event_callback(test_obs_finish_loading, nullptr);
+
 	obs_log(LOG_INFO, "Quick Docks plugin loaded successfully (version %s)", PLUGIN_VERSION);
 
+	obs_frontend_add_event_callback(test_obs_finish_loading, nullptr);
+
 	obs_log(LOG_INFO, "[DockSwitcher] Main window at load = %p", obs_frontend_get_main_window());
+
+	obs_frontend_add_event_callback(test_obs_finish_loading, nullptr);
 
 	return true;
 }
