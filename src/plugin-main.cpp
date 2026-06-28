@@ -76,6 +76,78 @@ static DockHotkey *find_key_comb(QString &key)
 	return nullptr;
 }
 
+//Load the keybinds from profle
+
+static void load_keybinds(DockHotkey &entry)
+{
+	config_t *profile = obs_frontend_get_profile_config();
+
+	if(!profile)
+	{
+		return;
+	}
+
+	const char *json = config_get_string(profile, "Hotkeys", entry.id.c_str());
+
+	if(!json)
+	{
+		return;
+	}
+
+	obs_data_t *data = obs_data_create_from_json(json);
+
+	if(!data)
+	{
+		return;
+	}
+
+	obs_data_array_t *keybinds = obs_data_get_array(data, "keybindings");
+
+	if(keybinds)
+	{
+		obs_hotkey_load(entry.hotkey, keybinds);
+		obs_data_array_release(keybinds);
+	}
+
+	obs_data_release(data);
+
+}
+
+//Save the keybinds
+
+static void save_bindings()
+{
+	config_t *profile = obs_frontend_get_profile_config();
+
+	if(!profile)
+	{
+		return;
+	}
+
+	for( auto &entry : dockHotKey)
+	{
+		if(entry->hotkey == OBS_INVALID_HOTKEY_ID){
+			continue;
+		}
+
+		obs_data_array_t *keybinds = obs_hotkey_save(entry->hotkey);
+
+		obs_data_t *data = obs_data_create();
+
+		if(keybinds)
+		{
+			obs_data_set_array(data, "keybindings", keybinds);
+			obs_data_array_release(keybinds);
+		}
+
+		const char *json = obs_data_get_json(data);
+
+		config_set_string(profile, "Hotkeys", entry->id.c_str(), json ? json : "{}");
+
+		obs_data_release(data);
+	}
+}
+
 //Show or Focus Dock
 
 static void focus_dock(QDockWidget *dock)
