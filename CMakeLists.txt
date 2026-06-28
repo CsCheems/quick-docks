@@ -38,3 +38,31 @@ endif()
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/plugin-main.cpp)
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
+
+# =====================================================
+# Deploy automático a OBS
+# =====================================================
+
+# =====================================================
+# Deploy automático a OBS
+# =====================================================
+
+set(OBS_INSTALL_DIR "C:/Program Files/obs-studio")
+set(RUNDIR "${CMAKE_BINARY_DIR}/rundir/$<CONFIG>")
+
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME}
+    POST_BUILD
+
+    # Copiar DLL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${RUNDIR}/quick-docks.dll"
+        "${OBS_INSTALL_DIR}/obs-plugins/64bit"
+
+    # Copiar carpeta del plugin
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${RUNDIR}/quick-docks"
+        "${OBS_INSTALL_DIR}/data/obs-plugins/quick-docks"
+
+    COMMENT "Deploying quick-docks to OBS..."
+)
