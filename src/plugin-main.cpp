@@ -217,6 +217,9 @@ static void obs_get_all_docks()
 			entry.get()
 		);
 
+		load_keybinds(*entry);
+
+		dockHotKey.push_back(move(entry));
 	}
 }
 
@@ -230,8 +233,14 @@ static void get_event_obs_finish_loading(enum obs_frontend_event event, void *){
 	obs_log(LOG_INFO, "OBS Done Loading");
 
 	obs_get_all_docks();
+
+	if(!timer)
+	{
+		timer = new QTimer(qApp);
+		QObject::connect(timer, &QTimer::timeout, obs_get_all_docks);
+		timer->start(3000);
+	}
 	
-	return;	
 }
 
 bool obs_module_load(void)
@@ -242,14 +251,29 @@ bool obs_module_load(void)
 
 	obs_frontend_add_event_callback(get_event_obs_finish_loading, nullptr);
 
+	obs_frontend_add_save_callback(
+		[](obs_data_t *, bool save, void *){
+			if(save)
+			{
+				save_bindings();
+			}
+		},
+		nullptr
+	);
+
 	return true;
 }
 
 void obs_module_unload(void)
 {
+	if(timer)
+	{
+		timer->stop();
+		timer->deleteLater();
+		timer = nullptr;
+	}
+
 	obs_frontend_remove_event_callback(get_event_obs_finish_loading, nullptr);
 	
 	obs_log(LOG_INFO, "Quick Docks plugin unloaded" );
-
-	
 }
