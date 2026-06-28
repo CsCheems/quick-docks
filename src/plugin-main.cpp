@@ -76,6 +76,33 @@ static DockHotkey *find_key_comb(QString &key)
 	return nullptr;
 }
 
+//Show or Focus Dock
+
+static void focus_dock(QDockWidget *dock)
+{
+	if(!dock->isVisible())
+	{
+		dock->show();
+	}
+	dock->raise();
+}
+
+//Listener for hotkeys 
+
+static void hotkey_pressed(void *data, obs_hotkey_id, obs_hotkey_t *, bool keyPressed)
+{
+	if(!keyPressed)
+	{
+		return;
+	}
+
+	auto *entry = static_cast<DockHotkey *>(data);
+
+	if(entry->dock){
+		focus_dock(entry->dock);
+	}
+} 
+
 //Get available docks
 
 static void obs_get_all_docks()
@@ -106,6 +133,18 @@ static void obs_get_all_docks()
 			continue;
 		}
 
+		auto entry = make_unique<DockHotkey>();
+		entry->id = ("focus_dock_" + key).toStdString();
+		entry->key = key;
+		entry->dock = dock;
+
+		entry->hotkey = obs_hotkey_register_frontend(
+			entry->id.c_str(),
+			("Focus Dock: " + title).toUtf8().constData(),
+			hotkey_pressed,
+			entry.get()
+		);
+
 	}
 }
 
@@ -122,15 +161,6 @@ static void get_event_obs_finish_loading(enum obs_frontend_event event, void *){
 	
 	return;	
 }
-
-static void obs_load_event(void)
-{
-	obs_frontend_add_event_callback(get_event_obs_finish_loading, nullptr);
-
-
-}
-
-
 
 bool obs_module_load(void)
 {
