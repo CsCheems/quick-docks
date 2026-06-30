@@ -87,7 +87,9 @@ This allows the user to view their list of panels and assign a shortcut to each 
    - **Windows**: `C:\Program Files\obs-studio\obs-plugins\64bit\`.
 4. Copy the `quick-docks` folder to the following location:
     - **Windows**: `C:\Program Files\obs-studio\data\obs-plugins\`.
-4. Launch OBS Studio. ## Usage
+5. Launch OBS Studio.
+  
+## Usage
 
 1. Open OBS and go to **File → Settings → Hotkeys**.
 2. Scroll down and look for the entries labeled **"Focus Dock: ..."**.
