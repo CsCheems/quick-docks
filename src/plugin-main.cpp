@@ -251,15 +251,13 @@ bool obs_module_load(void)
 
 	obs_frontend_add_event_callback(get_event_obs_finish_loading, nullptr);
 
-	obs_frontend_add_save_callback(
-		[](obs_data_t *, bool save, void *){
-			if(save)
-			{
-				save_bindings();
-			}
-		},
-		nullptr
-	);
+	obs_frontend_add_save_callback([](obs_data_t *, bool save, void *)
+	{
+		if(save)
+		{
+			save_bindings();
+		}
+	}, nullptr);
 
 	return true;
 }
